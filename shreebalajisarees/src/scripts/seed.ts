@@ -29,6 +29,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const storeModuleService = container.resolve(Modules.STORE);
 
   const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  const indiaCountries = ["in"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -59,10 +60,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
         supported_currencies: [
           {
             currency_code: "eur",
-            is_default: true,
+            is_default: false,
           },
           {
             currency_code: "usd",
+          },
+          {
+            currency_code: "inr",
+            is_default: true,
           },
         ],
         default_sales_channel_id: defaultSalesChannel[0].id,
@@ -79,18 +84,31 @@ export default async function seedDemoData({ container }: ExecArgs) {
           countries,
           payment_providers: ["pp_system_default"],
         },
+        {
+          name: "India",
+          currency_code: "inr",
+          countries: indiaCountries,
+          payment_providers: ["pp_system_default"],
+        },
       ],
     },
   });
   const region = regionResult[0];
+  const indiaRegion = regionResult[1];
   logger.info("Finished seeding regions.");
 
   logger.info("Seeding tax regions...");
   await createTaxRegionsWorkflow(container).run({
-    input: countries.map((country_code) => ({
-      country_code,
-      provider_id: "tp_system"
-    })),
+    input: [
+      ...countries.map((country_code) => ({
+        country_code,
+        provider_id: "tp_system",
+      })),
+      ...indiaCountries.map((country_code) => ({
+        country_code,
+        provider_id: "tp_system",
+      })),
+    ],
   });
   logger.info("Finished seeding tax regions.");
 
@@ -108,10 +126,19 @@ export default async function seedDemoData({ container }: ExecArgs) {
             address_1: "",
           },
         },
+        {
+          name: "Indian Warehouse",
+          address: {
+            city: "Mumbai",
+            country_code: "IN",
+            address_1: "",
+          },
+        },
       ],
     },
   });
   const stockLocation = stockLocationResult[0];
+  const indiaStockLocation = stockLocationResult[1];
 
   await link.create({
     [Modules.STOCK_LOCATION]: {
@@ -122,24 +149,33 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
 
+  await link.create({
+    [Modules.STOCK_LOCATION]: {
+      stock_location_id: indiaStockLocation.id,
+    },
+    [Modules.FULFILLMENT]: {
+      fulfillment_provider_id: "manual_manual",
+    },
+  });
+
   logger.info("Seeding fulfillment data...");
   const shippingProfiles = await fulfillmentModuleService.listShippingProfiles({
-    type: "default"
-  })
-  let shippingProfile = shippingProfiles.length ? shippingProfiles[0] : null
+    type: "default",
+  });
+  let shippingProfile = shippingProfiles.length ? shippingProfiles[0] : null;
 
   if (!shippingProfile) {
     const { result: shippingProfileResult } =
-    await createShippingProfilesWorkflow(container).run({
-      input: {
-        data: [
-          {
-            name: "Default Shipping Profile",
-            type: "default",
-          },
-        ],
-      },
-    });
+      await createShippingProfilesWorkflow(container).run({
+        input: {
+          data: [
+            {
+              name: "Default Shipping Profile",
+              type: "default",
+            },
+          ],
+        },
+      });
     shippingProfile = shippingProfileResult[0];
   }
 
@@ -183,12 +219,38 @@ export default async function seedDemoData({ container }: ExecArgs) {
     ],
   });
 
+  const indiaFulfillmentSet =
+    await fulfillmentModuleService.createFulfillmentSets({
+      name: "Indian Warehouse delivery",
+      type: "shipping",
+      service_zones: [
+        {
+          name: "India",
+          geo_zones: [
+            {
+              country_code: "in",
+              type: "country",
+            },
+          ],
+        },
+      ],
+    });
+
   await link.create({
     [Modules.STOCK_LOCATION]: {
       stock_location_id: stockLocation.id,
     },
     [Modules.FULFILLMENT]: {
       fulfillment_set_id: fulfillmentSet.id,
+    },
+  });
+
+  await link.create({
+    [Modules.STOCK_LOCATION]: {
+      stock_location_id: indiaStockLocation.id,
+    },
+    [Modules.FULFILLMENT]: {
+      fulfillment_set_id: indiaFulfillmentSet.id,
     },
   });
 
@@ -213,6 +275,10 @@ export default async function seedDemoData({ container }: ExecArgs) {
           {
             currency_code: "eur",
             amount: 10,
+          },
+          {
+            currency_code: "inr",
+            amount: 100,
           },
           {
             region_id: region.id,
@@ -253,8 +319,80 @@ export default async function seedDemoData({ container }: ExecArgs) {
             amount: 10,
           },
           {
+            currency_code: "inr",
+            amount: 150,
+          },
+          {
             region_id: region.id,
             amount: 10,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "Standard Shipping India",
+        price_type: "flat",
+        provider_id: "manual_manual",
+        service_zone_id: indiaFulfillmentSet.service_zones[0].id,
+        shipping_profile_id: shippingProfile.id,
+        type: {
+          label: "Standard",
+          description: "Ship in 3-5 days.",
+          code: "standard",
+        },
+        prices: [
+          {
+            currency_code: "inr",
+            amount: 50,
+          },
+          {
+            region_id: indiaRegion.id,
+            amount: 50,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "Express Shipping India",
+        price_type: "flat",
+        provider_id: "manual_manual",
+        service_zone_id: indiaFulfillmentSet.service_zones[0].id,
+        shipping_profile_id: shippingProfile.id,
+        type: {
+          label: "Express",
+          description: "Ship in 1-2 days.",
+          code: "express",
+        },
+        prices: [
+          {
+            currency_code: "inr",
+            amount: 100,
+          },
+          {
+            region_id: indiaRegion.id,
+            amount: 100,
           },
         ],
         rules: [

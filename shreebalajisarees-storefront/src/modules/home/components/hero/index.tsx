@@ -1,33 +1,29 @@
-import { Github } from "@medusajs/icons"
-import { Button, Heading } from "@medusajs/ui"
+import { Heading } from "@medusajs/ui"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const Hero = () => {
   return (
-    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
+    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-gradient-to-r from-orange-50 to-pink-50">
       <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center small:p-32 gap-6">
         <span>
           <Heading
             level="h1"
-            className="text-3xl leading-10 text-ui-fg-base font-normal"
+            className="text-4xl leading-tight text-ui-fg-base font-bold"
           >
-            Ecommerce Starter Template
+            Welcome to Shree Balaji Sarees
           </Heading>
           <Heading
             level="h2"
-            className="text-3xl leading-10 text-ui-fg-subtle font-normal"
+            className="text-xl leading-8 text-ui-fg-subtle font-normal mt-4"
           >
-            Powered by Medusa and Next.js
+            Discover Beautiful Traditional & Modern Sarees
           </Heading>
         </span>
-        <a
-          href="https://github.com/medusajs/nextjs-starter-medusa"
-          target="_blank"
-        >
-          <Button variant="secondary">
-            View on GitHub
-            <Github />
-          </Button>
-        </a>
+        <LocalizedClientLink href="/store">
+          <button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
+            Shop Now
+          </button>
+        </LocalizedClientLink>
       </div>
     </div>
   )

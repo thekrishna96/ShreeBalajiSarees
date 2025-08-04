@@ -58,6 +58,97 @@
     @apply px-4 py-2 border border-black rounded-full hover:bg-black hover:text-white transition-colors duration-200 ease-in;
   }
 
+  /* Modern Navigation Enhancements */
+  .nav-gradient-text {
+    @apply bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent;
+  }
+
+  .nav-hover-underline {
+    @apply relative;
+  }
+
+  .nav-hover-underline::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-300;
+  }
+
+  .nav-hover-underline:hover::after {
+    @apply w-full;
+  }
+
+  .menu-item-hover {
+    @apply hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 hover:text-purple-600 transition-all duration-300;
+  }
+
+  .glass-effect {
+    @apply bg-white/95 backdrop-blur-md border border-gray-200/50;
+  }
+
+  /* Product Grid Improvements */
+  .product-grid-spacing {
+    @apply gap-x-8 gap-y-12;
+  }
+
+  .product-image-container {
+    @apply shadow-sm hover:shadow-md transition-all duration-200;
+  }
+
+  .product-image-hover {
+    @apply hover:scale-102 transition-transform duration-300;
+  }
+
+  /* Text truncation for product titles */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Subtle hover scale */
+  .hover\:scale-102:hover {
+    transform: scale(1.02);
+  }
+
+  /* Image viewer styles */
+  .cursor-zoom-in {
+    cursor: zoom-in;
+  }
+
+  .cursor-zoom-out {
+    cursor: zoom-out;
+  }
+
+  /* Better image fit for product thumbnails */
+  .product-image-fit {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  /* Fast zoom transitions */
+  .zoom-transition {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  /* Performance optimizations */
+  .fast-transition {
+    transition: all 0.1s ease-out;
+  }
+
+  .fast-color-transition {
+    transition: color 0.1s ease-out, background-color 0.1s ease-out,
+      border-color 0.1s ease-out;
+  }
+
+  /* Reduce motion for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   .text-xsmall-regular {
     @apply text-[10px] leading-4 font-normal;
   }

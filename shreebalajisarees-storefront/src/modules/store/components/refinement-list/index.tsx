@@ -8,10 +8,13 @@ import SortProducts, { SortOptions } from "./sort-products"
 type RefinementListProps = {
   sortBy: SortOptions
   search?: boolean
-  'data-testid'?: string
+  "data-testid"?: string
 }
 
-const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListProps) => {
+const RefinementList = ({
+  sortBy,
+  "data-testid": dataTestId,
+}: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -32,8 +35,14 @@ const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListPro
   }
 
   return (
-    <div className="flex small:flex-col gap-12 py-4 mb-8 small:px-0 pl-6 small:min-w-[250px] small:ml-[1.675rem]">
-      <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} />
+    <div className="flex small:flex-col gap-6 py-4 mb-6 small:px-0 pl-6 small:min-w-[220px] small:ml-[1.675rem]">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <SortProducts
+          sortBy={sortBy}
+          setQueryParams={setQueryParams}
+          data-testid={dataTestId}
+        />
+      </div>
     </div>
   )
 }
