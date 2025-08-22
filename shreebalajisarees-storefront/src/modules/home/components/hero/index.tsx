@@ -78,82 +78,53 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center px-4">
-        <div className="w-full max-w-4xl text-center">
-          {/* Enhanced Text Container with Strong Blur Background */}
-          <div className="relative mx-auto max-w-3xl">
-            {/* Strong Blur Background */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-2xl rounded-3xl border border-white/30 shadow-2xl"></div>
+        <div className="w-full max-w-4xl text-center space-y-8">
+          {/* Main Title */}
+          <Heading
+            level="h1"
+            className="text-5xl md:text-6xl lg:text-7xl leading-tight font-bold tracking-tight text-white"
+          >
+            <span
+              className={`block bg-gradient-to-r ${currentHero.gradient} text-transparent bg-clip-text animate-fade-in drop-shadow-lg`}
+            >
+              {currentHero.title}
+            </span>
+          </Heading>
 
-            {/* Content Container */}
-            <div className="relative z-10 px-8 py-12 md:px-12 md:py-16 space-y-8">
-              {/* Welcome Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
-                <div className="w-2 h-2 bg-gradient-to-r from-amber-400 to-pink-400 rounded-full animate-pulse"></div>
-                <span className="text-white text-sm font-semibold">
-                  Welcome to
-                </span>
-              </div>
+          {/* Subtitle */}
+          <Heading
+            level="h2"
+            className="text-xl md:text-2xl lg:text-3xl leading-relaxed text-white font-medium drop-shadow-md"
+          >
+            {currentHero.subtitle}
+          </Heading>
 
-              {/* Main Title */}
-              <Heading
-                level="h1"
-                className="text-4xl md:text-5xl lg:text-6xl leading-tight font-black tracking-tight"
-              >
-                <span
-                  className={`block bg-gradient-to-r ${currentHero.gradient} text-transparent bg-clip-text animate-fade-in drop-shadow-lg`}
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <LocalizedClientLink href="/store">
+              <button className="group relative inline-flex items-center justify-center gap-3 rounded-full bg-white text-gray-800 font-bold px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95">
+                <span className="relative z-10">{currentHero.cta}</span>
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {currentHero.title}
-                </span>
-              </Heading>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </button>
+            </LocalizedClientLink>
 
-              {/* Subtitle */}
-              <Heading
-                level="h2"
-                className="text-lg md:text-xl lg:text-2xl leading-relaxed text-white font-medium drop-shadow-md"
-              >
-                {currentHero.subtitle}
-              </Heading>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <LocalizedClientLink href="/store">
-                  <button className="group relative inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95">
-                    <span className="relative z-10">{currentHero.cta}</span>
-                    <svg
-                      className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 blur opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-                  </button>
-                </LocalizedClientLink>
-
-                <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-semibold px-8 py-4 hover:bg-white/30 transition-all duration-300 shadow-lg">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                    />
-                  </svg>
-                  View Catalog
-                </button>
-              </div>
-            </div>
+            <LocalizedClientLink href="/store">
+              <button className="inline-flex items-center justify-center gap-2 rounded-full bg-transparent border-2 border-white text-white font-semibold px-8 py-4 hover:bg-white hover:text-gray-800 transition-all duration-300 shadow-lg">
+                View Catalog
+              </button>
+            </LocalizedClientLink>
           </div>
         </div>
       </div>
