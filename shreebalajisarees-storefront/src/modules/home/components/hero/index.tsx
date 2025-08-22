@@ -1,30 +1,224 @@
+"use client"
+
 import { Heading } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { useState, useEffect } from "react"
+
+const heroSlides = [
+  {
+    image: "/images/home-hero.png",
+    title: "Shree Balaji Sarees",
+    subtitle: "Discover Beautiful Traditional & Modern Sarees",
+    cta: "Shop Now",
+    gradient: "from-amber-300 via-rose-300 to-pink-400",
+  },
+  {
+    image: "/images/hero-2.jpg", // Add more hero images
+    title: "Premium Collection",
+    subtitle: "Handcrafted Elegance for Every Occasion",
+    cta: "Explore Collection",
+    gradient: "from-purple-300 via-pink-300 to-rose-400",
+  },
+  {
+    image: "/images/hero-3.jpg",
+    title: "Festive Specials",
+    subtitle: "Celebrate in Style with Our Festive Range",
+    cta: "Shop Festive",
+    gradient: "from-rose-300 via-pink-300 to-purple-400",
+  },
+]
 
 const Hero = () => {
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+
+  useEffect(() => {
+    if (!isAutoPlaying) return
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [isAutoPlaying, currentSlide]) // Added currentSlide dependency to reset timer
+
+  const currentHero = heroSlides[currentSlide]
+
+  // Function to handle manual navigation with timer reset
+  const handleSlideChange = (newSlide: number) => {
+    setCurrentSlide(newSlide)
+    setIsAutoPlaying(false) // Pause auto-play
+    // Resume auto-play after 8 seconds of user interaction
+    setTimeout(() => setIsAutoPlaying(true), 8000)
+  }
+
   return (
-    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-gradient-to-r from-orange-50 to-pink-50">
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center small:p-32 gap-6">
-        <span>
-          <Heading
-            level="h1"
-            className="text-4xl leading-tight text-ui-fg-base font-bold"
-          >
-            Welcome to Shree Balaji Sarees
-          </Heading>
-          <Heading
-            level="h2"
-            className="text-xl leading-8 text-ui-fg-subtle font-normal mt-4"
-          >
-            Discover Beautiful Traditional & Modern Sarees
-          </Heading>
-        </span>
-        <LocalizedClientLink href="/store">
-          <button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
-            Shop Now
-          </button>
-        </LocalizedClientLink>
+    <div className="relative h-[92vh] w-full overflow-hidden">
+      {/* Background Slides */}
+      {heroSlides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentSlide ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url(${slide.image})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+      ))}
+
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-amber-400/20 to-rose-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
+
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center justify-center px-4">
+        <div className="w-full max-w-4xl text-center">
+          {/* Enhanced Text Container with Strong Blur Background */}
+          <div className="relative mx-auto max-w-3xl">
+            {/* Strong Blur Background */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-2xl rounded-3xl border border-white/30 shadow-2xl"></div>
+
+            {/* Content Container */}
+            <div className="relative z-10 px-8 py-12 md:px-12 md:py-16 space-y-8">
+              {/* Welcome Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
+                <div className="w-2 h-2 bg-gradient-to-r from-amber-400 to-pink-400 rounded-full animate-pulse"></div>
+                <span className="text-white text-sm font-semibold">
+                  Welcome to
+                </span>
+              </div>
+
+              {/* Main Title */}
+              <Heading
+                level="h1"
+                className="text-4xl md:text-5xl lg:text-6xl leading-tight font-black tracking-tight"
+              >
+                <span
+                  className={`block bg-gradient-to-r ${currentHero.gradient} text-transparent bg-clip-text animate-fade-in drop-shadow-lg`}
+                >
+                  {currentHero.title}
+                </span>
+              </Heading>
+
+              {/* Subtitle */}
+              <Heading
+                level="h2"
+                className="text-lg md:text-xl lg:text-2xl leading-relaxed text-white font-medium drop-shadow-md"
+              >
+                {currentHero.subtitle}
+              </Heading>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <LocalizedClientLink href="/store">
+                  <button className="group relative inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95">
+                    <span className="relative z-10">{currentHero.cta}</span>
+                    <svg
+                      className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 blur opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                  </button>
+                </LocalizedClientLink>
+
+                <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-semibold px-8 py-4 hover:bg-white/30 transition-all duration-300 shadow-lg">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    />
+                  </svg>
+                  View Catalog
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="flex items-center gap-3">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleSlideChange(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? "bg-white scale-125"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={() =>
+          handleSlideChange(
+            (currentSlide - 1 + heroSlides.length) % heroSlides.length
+          )
+        }
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+
+      <button
+        onClick={() =>
+          handleSlideChange((currentSlide + 1) % heroSlides.length)
+        }
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
     </div>
   )
 }

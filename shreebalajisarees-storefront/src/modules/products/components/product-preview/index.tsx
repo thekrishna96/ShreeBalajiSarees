@@ -30,22 +30,30 @@ const ProductPreview = memo(async function ProductPreview({
   })
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
-      <div data-testid="product-wrapper" className="space-y-3">
-        <Thumbnail
-          thumbnail={product.thumbnail}
-          images={product.images}
-          size="full"
-          isFeatured={isFeatured}
-        />
-        <div className="px-1 space-y-2">
+    <LocalizedClientLink
+      href={`/products/${product.handle}`}
+      className="group block w-full h-full"
+    >
+      <div
+        data-testid="product-wrapper"
+        className="flex flex-col h-full space-y-4"
+      >
+        <div className="flex-shrink-0">
+          <Thumbnail
+            thumbnail={product.thumbnail}
+            images={product.images}
+            size="full"
+            isFeatured={isFeatured}
+          />
+        </div>
+        <div className="px-2 space-y-3 flex-grow flex flex-col justify-between">
           <Text
-            className="text-ui-fg-base font-medium text-sm leading-relaxed line-clamp-2"
+            className="text-gray-900 font-semibold text-base leading-snug line-clamp-2 group-hover:text-purple-700 transition-colors duration-200"
             data-testid="product-title"
           >
             {product.title}
           </Text>
-          <div className="flex items-center justify-start">
+          <div className="flex items-center justify-start mt-auto">
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
         </div>

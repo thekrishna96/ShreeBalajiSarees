@@ -57,7 +57,7 @@ const NavLinks = memo(() => {
           <LocalizedClientLink
             key={item.href}
             className={clx(
-              "relative text-base font-medium transition-colors duration-150 group",
+              "relative text-base font-medium transition-colors duration-150 nav-link",
               active ? "text-purple-600" : "text-gray-700 hover:text-purple-600"
             )}
             href={item.href}
@@ -66,8 +66,8 @@ const NavLinks = memo(() => {
             {item.label}
             <span
               className={clx(
-                "absolute -bottom-1 left-0 h-0.5 bg-purple-600 transition-all duration-200",
-                active ? "w-full" : "w-0 group-hover:w-full"
+                "absolute -bottom-1 left-0 h-0.5 bg-purple-600 transition-all duration-200 underline-indicator",
+                active ? "w-full" : "w-0"
               )}
             ></span>
           </LocalizedClientLink>
